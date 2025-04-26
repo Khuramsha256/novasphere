@@ -1,4 +1,75 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FastestEarn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-center p-4">
+  <h1 class="text-2xl font-bold mb-4">FastestEarn</h1>
+  <p class="mb-2">اپنا ریفرل لنک شیئر کریں اور کمائیں!</p>
+  <div class="mb-4">
+    <input id="refInput" type="text" placeholder="اپنا یوزر نیم درج کریں" class="border p-2 rounded w-full max-w-md" />
+    <button onclick="generateLink()" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">لنک بنائیں</button>
+  </div>
+  <div id="linkSection" class="mb-4 hidden">
+    <p class="mb-2">آپ کا ریفرل لنک:</p>
+    <input id="refLink" type="text" readonly class="border p-2 rounded w-full max-w-md" />
+    <button onclick="copyLink()" class="bg-green-500 text-white px-4 py-2 rounded mt-2">لنک کاپی کریں</button>
+  </div>
+  <div id="statsSection" class="mb-4 hidden">
+    <p>ویوز: <span id="viewCount">0</span></p>
+    <p>ارننگ: PKR <span id="earnings">0</span></p>
+  </div>
 
+  <script>
+    const refInput = document.getElementById('refInput');
+    const refLink = document.getElementById('refLink');
+    const linkSection = document.getElementById('linkSection');
+    const statsSection = document.getElementById('statsSection');
+    const viewCount = document.getElementById('viewCount');
+    const earnings = document.getElementById('earnings');
+
+    function generateLink() {
+      const username = refInput.value.trim();
+      if (username) {
+        const url = `${window.location.origin}?ref=${encodeURIComponent(username)}`;
+        refLink.value = url;
+        linkSection.classList.remove('hidden');
+      }
+    }
+
+    function copyLink() {
+      refLink.select();
+      document.execCommand('copy');
+      alert('لنک کاپی ہو گیا ہے!');
+    }
+
+    function getReferrer() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('ref');
+    }
+
+    function updateStats() {
+      const referrer = getReferrer();
+      if (referrer) {
+        // لوکل اسٹوریج میں ویوز کی گنتی
+        const viewsKey = `views_${referrer}`;
+        let views = parseInt(localStorage.getItem(viewsKey)) || 0;
+        views += 1;
+        localStorage.setItem(viewsKey, views);
+        viewCount.textContent = views;
+        earnings.textContent = views * 1; // ہر ویو پر 1 PKR
+        statsSection.classList.remove('hidden');
+      }
+    }
+
+    // اگر یو آر ایل میں ریفرر ہے تو سٹیٹس اپڈیٹ کریں
+    window.onload = updateStats;
+  </script>
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="en">
 <head>
